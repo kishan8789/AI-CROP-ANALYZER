@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:5000/api', // Deployment ke baad isko Render URL se replace karna
+    baseURL: '/api', // Vercel ab isko automatically apne serverless backend par bhej dega 🚀
     headers: {
         'Content-Type': 'application/json'
     }
