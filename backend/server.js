@@ -6,20 +6,35 @@ const apiRoutes = require('./routes/apiRoutes');
 
 const app = express();
 
-// Middleware
-app.use(cors()); // Render par frontend URL allow karne ke liye
+// ✅ Middleware - CORS ko thoda aur powerful banaya hai
+app.use(cors({
+    origin: "*", // Sabhi domains ko allow karne ke liye (Deployment ke liye best)
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+}));
+
 app.use(express.json());
 
-// Connect Database
+// ✅ Database Connection
 connectDB();
 
-// Routes
+// ✅ Routes
 app.use('/api', apiRoutes);
 
-// Health Check for Render
-app.get('/health', (req, res) => res.status(200).json({ status: "Live", message: "KrishiAI Backend is running!" }));
+// ✅ Root Route (Browser mein kholne par error nahi dikhayega)
+app.get('/', (req, res) => {
+    res.send("<h1>KrishiAI Backend is Live!</h1><p>Use /api for requests.</p>");
+});
 
+// ✅ Health Check for Render (Auto-restarts ke liye zaroori hai)
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: "Live", message: "Server is healthy" });
+});
+
+// ✅ Port Handling (Render automatically PORT variable deta hai)
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+});
 
 module.exports = app;
