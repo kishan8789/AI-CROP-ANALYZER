@@ -15,13 +15,13 @@ const Sidebar = () => {
   return (
     <div className="h-screen w-64 bg-[#052e16] text-white fixed flex flex-col shadow-2xl z-50 border-r border-green-900">
       
-      {/* 🌾 Branding: Krishi Mitr - Yahan change ho gaya hai */}
+      {/* 🌾 New Branding: Smart Farm Sathi */}
       <div className="p-8 text-2xl font-black border-b border-green-900 flex flex-col items-start gap-1">
         <div className="flex items-center gap-2">
           <span className="bg-green-500 p-1.5 rounded-lg shadow-inner">🌾</span>
-          <span className="tracking-tight text-white">Krishi <span className="text-yellow-400">Mitr</span></span>
+          <span className="tracking-tight text-white italic">Smart Farm <span className="text-yellow-400">Sathi</span></span>
         </div>
-        <span className="text-[10px] text-green-400 uppercase tracking-[0.2em] font-bold ml-1">Digital Kheti Saathi</span>
+        <span className="text-[10px] text-green-400 uppercase tracking-[0.2em] font-bold ml-1">Your AI Farming Ally</span>
       </div>
 
       <div className="flex-1 py-8 flex flex-col gap-3 px-4">
@@ -45,7 +45,7 @@ const Sidebar = () => {
         ))}
       </div>
 
-      {/* Logout Section - Ab aur bhi clear hai */}
+      {/* Logout Section */}
       <div className="p-6 border-t border-green-900 bg-[#042612]">
         <button className="flex items-center gap-3 px-4 py-3 text-red-100 font-bold hover:bg-red-600/20 hover:text-red-400 rounded-xl w-full transition-all border border-transparent hover:border-red-600/50">
           <LogOut size={20} />
