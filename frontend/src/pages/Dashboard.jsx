@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
-import { CloudRain, Thermometer, ShieldAlert, TrendingUp, Bell, Search, Droplets, Wind, Map, Activity, Tractor, Navigation, ChevronRight, Sprout } from 'lucide-react';
+import { CloudRain, Thermometer, ShieldAlert, TrendingUp, Bell, Search, Droplets, Wind, Map, Activity, Tractor, Navigation, ChevronRight, Sprout, Plus, Minus, RefreshCw } from 'lucide-react';
 
 const Dashboard = () => {
+  const [selectedZone, setSelectedZone] = useState('North field');
+  const [showHealthLayer, setShowHealthLayer] = useState(true);
+  const [mapZoom, setMapZoom] = useState(1);
+  const [scanTime, setScanTime] = useState('Just now');
+
+  const zones = {
+    'North field': { health: 'Healthy', score: 92, moisture: '68%', area: '4.8 acres', color: 'green' },
+    'East field': { health: 'Needs attention', score: 64, moisture: '41%', area: '3.6 acres', color: 'yellow' },
+    'South field': { health: 'Healthy', score: 84, moisture: '59%', area: '4.0 acres', color: 'green' },
+  };
+  const activeZone = zones[selectedZone];
+
   // Mock data for Recharts 
   const yieldData = [
     { name: '2019', yield: 18 }, { name: '2020', yield: 21 },
@@ -13,7 +25,7 @@ const Dashboard = () => {
     // 🌟 Added an animated tech-grid background overlay to the existing gradient
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-gray-50 to-emerald-100 pb-12 fade-in font-sans relative">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
-      
+
       {/* Premium Top Header */}
       <header className="glass-card sticky top-0 z-30 px-8 py-4 flex justify-between items-center mb-8 bg-white/60 backdrop-blur-2xl border-b border-white shadow-sm">
         <div>
@@ -48,7 +60,7 @@ const Dashboard = () => {
             <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white animate-ping"></span>
             <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
           </button>
-          
+
           <div className="flex items-center gap-3 pl-4 border-l border-gray-300/50 cursor-pointer hover:opacity-80 transition hover-lift">
             <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-green-600 to-emerald-400 text-white flex items-center justify-center font-bold shadow-lg border-2 border-white">
               FM
@@ -62,10 +74,10 @@ const Dashboard = () => {
       </header>
 
       <div className="px-8 max-w-[1600px] mx-auto relative z-10">
-        
+
         {/* 📊 Metrics Cards (Upgraded with micro-trends & glow) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          
+
           {/* Card 1: Weather */}
           <div className="glass-card hover-lift p-6 rounded-3xl group bg-white/60 backdrop-blur-xl border border-white shadow-xl shadow-gray-200/50 relative overflow-hidden">
             <div className="absolute -right-10 -top-10 w-32 h-32 bg-blue-100 rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
@@ -86,7 +98,7 @@ const Dashboard = () => {
 
           {/* Card 2: Temperature */}
           <div className="glass-card hover-lift p-6 rounded-3xl group bg-white/60 backdrop-blur-xl border border-white shadow-xl shadow-gray-200/50 relative overflow-hidden">
-             <div className="absolute -right-10 -top-10 w-32 h-32 bg-orange-100 rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
+            <div className="absolute -right-10 -top-10 w-32 h-32 bg-orange-100 rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
             <div className="flex justify-between items-start mb-4 relative z-10">
               <div className="p-3 bg-gradient-to-br from-orange-100 to-orange-50 text-orange-600 rounded-2xl group-hover:scale-110 group-hover:-rotate-6 transition-transform shadow-sm">
                 <Thermometer size={24} />
@@ -118,7 +130,7 @@ const Dashboard = () => {
           <div className="bg-gradient-to-br from-green-600 via-emerald-700 to-teal-900 p-6 rounded-3xl hover-lift shadow-2xl shadow-green-700/30 text-white relative overflow-hidden border border-green-400/30 group">
             <div className="absolute right-0 top-0 w-40 h-40 bg-white opacity-5 rounded-bl-[100px] group-hover:scale-110 transition-transform duration-500"></div>
             <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-green-400/20 blur-2xl rounded-full"></div>
-            
+
             <div className="flex justify-between items-start mb-4 relative z-10">
               <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner group-hover:rotate-12 transition-transform">
                 <TrendingUp size={24} className="text-white" />
@@ -135,7 +147,7 @@ const Dashboard = () => {
 
         {/* 📈 Graph & AI Recommendations Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          
+
           {/* Main Chart */}
           <div className="glass-card hover-lift p-6 rounded-3xl col-span-2 bg-white/70 backdrop-blur-xl border border-white shadow-xl shadow-gray-200/50">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
@@ -143,7 +155,7 @@ const Dashboard = () => {
                 <h3 className="text-xl font-extrabold text-gray-800">Yield Productivity Trend</h3>
                 <p className="text-sm font-medium text-gray-500 mt-1">Historical data vs AI projections</p>
               </div>
-              
+
               {/* NAYA CHIJ: Chart Filters */}
               <div className="flex items-center gap-2 bg-gray-100/80 p-1 rounded-xl">
                 <button className="px-4 py-1.5 text-sm font-bold rounded-lg text-gray-500 hover:text-gray-900 transition-colors">1W</button>
@@ -156,18 +168,18 @@ const Dashboard = () => {
                 <AreaChart data={yieldData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorYield" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.6}/>
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.6} />
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.05)" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#6b7280', fontSize: 12, fontWeight: 600}} dy={10} />
-                  <YAxis axisLine={false} tickLine={false} tick={{fill: '#6b7280', fontSize: 12, fontWeight: 600}} />
-                  <Tooltip 
-                    contentStyle={{borderRadius: '20px', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(10px)', border: '1px solid rgba(16,185,129,0.2)', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)', padding: '12px 16px', fontWeight: 'bold'}}
-                    cursor={{stroke: '#10b981', strokeWidth: 2, strokeDasharray: '4 4'}}
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#6b7280', fontSize: 12, fontWeight: 600 }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6b7280', fontSize: 12, fontWeight: 600 }} />
+                  <Tooltip
+                    contentStyle={{ borderRadius: '20px', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(10px)', border: '1px solid rgba(16,185,129,0.2)', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)', padding: '12px 16px', fontWeight: 'bold' }}
+                    cursor={{ stroke: '#10b981', strokeWidth: 2, strokeDasharray: '4 4' }}
                   />
-                  <Area type="monotone" dataKey="yield" stroke="#10b981" strokeWidth={5} fillOpacity={1} fill="url(#colorYield)" activeDot={{r: 8, fill: '#10b981', stroke: '#fff', strokeWidth: 3, shadow: '0 0 10px rgba(16,185,129,0.5)'}} />
+                  <Area type="monotone" dataKey="yield" stroke="#10b981" strokeWidth={5} fillOpacity={1} fill="url(#colorYield)" activeDot={{ r: 8, fill: '#10b981', stroke: '#fff', strokeWidth: 3, shadow: '0 0 10px rgba(16,185,129,0.5)' }} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -177,11 +189,11 @@ const Dashboard = () => {
           <div className="glass-card hover-lift rounded-3xl flex flex-col h-full overflow-hidden bg-white/70 backdrop-blur-xl border border-white shadow-xl shadow-gray-200/50">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gradient-to-r from-white to-gray-50">
               <h3 className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-700 to-emerald-500 flex items-center gap-2">
-                <Sprout size={20}/> AI Advisor
+                <Sprout size={20} /> AI Advisor
               </h3>
               <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md shadow-red-500/30 animate-pulse">2 New Alerts</span>
             </div>
-            
+
             <div className="p-6 flex-1 flex flex-col gap-4">
               {/* Alert 1 */}
               <div className="p-5 rounded-2xl bg-white border border-blue-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all cursor-default relative overflow-hidden group">
@@ -218,7 +230,7 @@ const Dashboard = () => {
 
         {/* 🌟 NAYA CHIJ (ALL NEW SECTION): Farm Operations & Satellite */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          
+
           {/* Live Satellite View */}
           <div className="glass-card hover-lift p-6 rounded-3xl bg-white/70 backdrop-blur-xl border border-white shadow-xl shadow-gray-200/50 flex flex-col">
             <div className="flex justify-between items-center mb-6">
@@ -229,28 +241,51 @@ const Dashboard = () => {
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div> Live Sync
               </span>
             </div>
-            
-            {/* Animated Map Placeholder */}
-            <div className="flex-1 min-h-[200px] bg-gray-900 rounded-2xl relative overflow-hidden group cursor-pointer border-4 border-white shadow-inner">
-              {/* Fake Map Background */}
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-30"></div>
-              <div className="absolute inset-0 bg-gradient-to-tr from-green-900/40 to-blue-900/40"></div>
-              
+
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              {Object.keys(zones).map((zone) => (
+                <button key={zone} type="button" onClick={() => setSelectedZone(zone)} className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${selectedZone === zone ? 'bg-green-600 text-white shadow-sm' : 'bg-white text-gray-500 hover:bg-green-50'}`}>
+                  {zone}
+                </button>
+              ))}
+              <button type="button" onClick={() => setShowHealthLayer((visible) => !visible)} className="ml-auto rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold text-gray-600 hover:border-green-300 hover:text-green-700">
+                {showHealthLayer ? 'Hide health layer' : 'Show health layer'}
+              </button>
+            </div>
+
+            <div className="flex-1 min-h-[200px] bg-slate-900 rounded-2xl relative overflow-hidden group border-4 border-white shadow-inner">
+              <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'linear-gradient(rgba(148,163,184,.25) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,.25) 1px, transparent 1px)', backgroundSize: '32px 32px', transform: `scale(${mapZoom})` }}></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-green-950/70 to-blue-950/60"></div>
+
               {/* Radar Sweep Animation */}
               <div className="absolute top-1/2 left-1/2 w-[200%] h-[200%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-green-500/30 opacity-20 group-hover:animate-spin" style={{ animationDuration: '4s' }}>
                 <div className="w-1/2 h-1/2 bg-gradient-to-br from-green-400/20 to-transparent rounded-tl-full"></div>
               </div>
 
-              {/* Crop Zones */}
-              <div className="absolute top-[20%] left-[30%] w-20 h-20 bg-green-500/40 rounded-3xl blur-md border border-green-400"></div>
-              <div className="absolute bottom-[20%] right-[20%] w-24 h-16 bg-yellow-500/40 rounded-3xl blur-md border border-yellow-400"></div>
-              
-              {/* Overlay Text */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 backdrop-blur-sm">
-                <button className="bg-white text-gray-900 px-6 py-2 rounded-full font-bold shadow-2xl flex items-center gap-2 transform scale-90 group-hover:scale-100 transition-all">
-                  <Navigation size={16} /> Open Full Map
-                </button>
+              <button type="button" aria-label="Select North field" onClick={() => setSelectedZone('North field')} className={`absolute top-[20%] left-[30%] h-20 w-28 rounded-3xl border-2 ${showHealthLayer ? 'bg-green-500/50 border-green-300' : 'bg-white/10 border-white/40'} ${selectedZone === 'North field' ? 'ring-4 ring-white/70' : ''}`}>
+                <span className="text-xs font-bold text-white">North field</span>
+              </button>
+              <button type="button" aria-label="Select East field" onClick={() => setSelectedZone('East field')} className={`absolute bottom-[20%] right-[20%] h-16 w-28 rounded-3xl border-2 ${showHealthLayer ? 'bg-yellow-500/50 border-yellow-300' : 'bg-white/10 border-white/40'} ${selectedZone === 'East field' ? 'ring-4 ring-white/70' : ''}`}>
+                <span className="text-xs font-bold text-white">East field</span>
+              </button>
+              <button type="button" aria-label="Select South field" onClick={() => setSelectedZone('South field')} className={`absolute bottom-[13%] left-[18%] h-14 w-24 rounded-3xl border-2 ${showHealthLayer ? 'bg-green-500/50 border-green-300' : 'bg-white/10 border-white/40'} ${selectedZone === 'South field' ? 'ring-4 ring-white/70' : ''}`}>
+                <span className="text-xs font-bold text-white">South field</span>
+              </button>
+
+              <div className="absolute right-3 top-3 flex flex-col overflow-hidden rounded-xl border border-white/20 bg-black/30 backdrop-blur-sm">
+                <button type="button" aria-label="Zoom in" onClick={() => setMapZoom((zoom) => Math.min(1.25, zoom + 0.1))} className="p-2 text-white hover:bg-white/20"><Plus size={16} /></button>
+                <button type="button" aria-label="Zoom out" onClick={() => setMapZoom((zoom) => Math.max(1, zoom - 0.1))} className="border-t border-white/20 p-2 text-white hover:bg-white/20"><Minus size={16} /></button>
               </div>
+
+            </div>
+            <div className="mt-4 flex items-center justify-between rounded-2xl border border-gray-100 bg-white/80 p-4">
+              <div>
+                <p className="text-sm font-extrabold text-gray-800">{selectedZone}: {activeZone.health}</p>
+                <p className="mt-1 text-xs font-semibold text-gray-500">Health {activeZone.score}% | Moisture {activeZone.moisture} | {activeZone.area} | {scanTime}</p>
+              </div>
+              <button type="button" onClick={() => setScanTime('Scanned just now')} className="flex items-center gap-2 rounded-xl bg-green-50 px-3 py-2 text-xs font-extrabold text-green-700 hover:bg-green-100">
+                <RefreshCw size={14} /> Scan
+              </button>
             </div>
           </div>
 
@@ -259,7 +294,7 @@ const Dashboard = () => {
             <h3 className="text-lg font-extrabold text-gray-800 mb-6 flex items-center gap-2">
               <Tractor size={20} className="text-orange-500" /> AI Scheduled Tasks
             </h3>
-            
+
             <div className="space-y-4">
               {/* Task 1 */}
               <div className="flex items-center justify-between p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:border-orange-200 transition-colors">
@@ -295,7 +330,7 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
-            
+
             <button className="w-full mt-4 py-3 text-sm font-bold text-gray-600 hover:text-gray-900 bg-gray-100/50 hover:bg-gray-100 rounded-xl transition-all">
               + Add Custom Task
             </button>

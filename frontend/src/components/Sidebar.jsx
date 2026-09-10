@@ -1,19 +1,17 @@
 import React, { useContext } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Home, LayoutDashboard, Sprout, Landmark, LogOut } from 'lucide-react';
+import { Home, LayoutDashboard, Sprout, Landmark, LineChart, MessageSquare, LogOut } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 
 const Sidebar = () => {
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Removed 'AI Assistant' (/chat) and 'Analytics' (/analytics) — neither
-  // route exists in App.jsx, so they rendered a blank page. The floating
-  // Chatbot widget already covers AI-assistant access from every page.
-  // Add these back once real routes/pages exist for them.
   const menuItems = [
     { name: 'Home', icon: <Home size={22} />, path: '/' },
     { name: 'Dashboard', icon: <LayoutDashboard size={22} />, path: '/dashboard' },
+    { name: 'Analytics', icon: <LineChart size={22} />, path: '/analytics' },
+    { name: 'AI Assistant', icon: <MessageSquare size={22} />, path: '/chat' },
     { name: 'AI Predictor', icon: <Sprout size={22} />, path: '/predict' },
     { name: 'Subsidy Hub', icon: <Landmark size={22} />, path: '/schemes' },
   ];
@@ -25,7 +23,6 @@ const Sidebar = () => {
 
   return (
     <div className="h-screen w-64 bg-[#052e16] text-white fixed flex flex-col shadow-2xl z-50 border-r border-green-900">
-
       <div className="p-8 text-2xl font-black border-b border-green-900 flex flex-col items-start gap-1">
         <div className="flex items-center gap-2">
           <span className="bg-green-500 p-1.5 rounded-lg shadow-inner">🌾</span>
@@ -40,10 +37,9 @@ const Sidebar = () => {
             key={item.name}
             to={item.path}
             className={({ isActive }) =>
-              `flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group ${
-                isActive
-                  ? 'bg-green-600 text-white shadow-lg shadow-green-900/50 scale-[1.02] border-l-4 border-yellow-400'
-                  : 'text-gray-200 hover:bg-green-800/50 hover:text-white'
+              `flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group ${isActive
+                ? 'bg-green-600 text-white shadow-lg shadow-green-900/50 scale-[1.02] border-l-4 border-yellow-400'
+                : 'text-gray-200 hover:bg-green-800/50 hover:text-white'
               }`
             }
           >

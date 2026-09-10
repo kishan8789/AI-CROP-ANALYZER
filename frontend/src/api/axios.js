@@ -11,6 +11,10 @@ const api = axios.create({
         'Content-Type': 'application/json'
     },
     // Render free-tier instances cold-start slowly; give them time to wake up.
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    // Render free-tier instances cold-start slowly; give them time to wake up.
     timeout: 30000
 });
 

@@ -10,6 +10,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Analytics from './pages/Analytics';
+import Assistant from './pages/Assistant';
 import Predictor from './pages/Predictor';
 import SubsidyHub from './pages/SubsidyHub';
 
@@ -24,7 +26,6 @@ function App() {
       <div className="flex h-screen bg-gray-50 font-sans overflow-hidden">
 
         {isSidebarVisible && <Sidebar />}
-
         <div className={`flex-1 overflow-y-auto ${isSidebarVisible ? 'ml-64' : 'ml-0'}`}>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -34,6 +35,8 @@ function App() {
             {/* These now redirect to /login if nobody is signed in, instead
                 of rendering user-specific pages for anonymous visitors. */}
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+            <Route path="/chat" element={<ProtectedRoute><Assistant /></ProtectedRoute>} />
             <Route path="/predict" element={<ProtectedRoute><Predictor /></ProtectedRoute>} />
             <Route path="/schemes" element={<ProtectedRoute><SubsidyHub /></ProtectedRoute>} />
           </Routes>
