@@ -1,40 +1,53 @@
+```javascript
 import axios from 'axios';
 
-// Reads from frontend/.env (Vite requires the VITE_ prefix).
-// Falls back to localhost:5000 for local development so you don't have to
-// edit source code every time you switch between local/staging/prod.
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// API URL
+// Local development:
+// VITE_API_URL=http://localhost:5000/api
+//
+// Production (Vercel):
+// VITE_API_URL=https://krishi-mitr.onrender.com/api
+
+const baseURL =
+    import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const api = axios.create({
     baseURL,
     headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
     },
-    // Render free-tier instances cold-start slowly; give them time to wake up.
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    // Render free-tier instances cold-start slowly; give them time to wake up.
-    timeout: 30000
+    // Render free-tier backend may take some time to wake up
+    timeout: 30000,
 });
 
+// Add JWT token to every request
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
+
         if (token) {
             config.headers['x-auth-token'] = token;
         }
+
         return config;
     },
-    (error) => Promise.reject(error)
+    (error) => {
+        return Promise.reject(error);
+    }
 );
 
+// Handle API errors
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        console.error('API Error:', error.response?.data || error.message);
+        console.error(
+            'API Error:',
+            error.response?.data || error.message
+        );
+
         return Promise.reject(error);
     }
 );
 
 export default api;
+```
