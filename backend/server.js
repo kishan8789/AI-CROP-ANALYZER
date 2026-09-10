@@ -1,40 +1,20 @@
-require('dotenv').config();
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const cors = require('cors');
-const connectDB = require('./config/db');
-const apiRoutes = require('./routes/apiRoutes');
+require('dotenv').config();
 
 const app = express();
 
-// ✅ Middleware - CORS ko thoda aur powerful banaya hai
-app.use(cors({
-    origin: "*", // Sabhi domains ko allow karne ke liye (Deployment ke liye best)
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
-}));
-
+app.use(cors({ origin: process.env.CLIENT_URL || '*', credentials: true }));
 app.use(express.json());
 
-// ✅ Database Connection
-connectDB();
-
-// ✅ Routes
-app.use('/api', apiRoutes);
-
-// ✅ Root Route (Browser mein kholne par error nahi dikhayega)
-app.get('/', (req, res) => {
-    res.send("<h1>KrishiAI Backend is Live!</h1><p>Use /api for requests.</p>");
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, 
+    max: 100, 
+    message: { error: 'Too many requests from this IP, please try again after 15 minutes[cite: 1].' }
 });
 
-// ✅ Health Check for Render (Auto-restarts ke liye zaroori hai)
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: "Live", message: "Server is healthy" });
-});
+app.use('/api/', apiLimiter);
 
-// ✅ Port Handling (Render automatically PORT variable deta hai)
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-});
-
-module.exports = app;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}[cite: 1]`));
