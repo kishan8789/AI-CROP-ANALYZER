@@ -4,13 +4,17 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    // Tracks whether we've finished checking localStorage on first load.
+    // Without this, ProtectedRoute briefly sees user === null on every page
+    // refresh and redirects to /login even for a logged-in user.
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check if user is logged in on app load
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         }
+        setLoading(false);
     }, []);
 
     const login = (userData, token) => {
@@ -26,7 +30,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );
