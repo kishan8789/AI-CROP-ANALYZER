@@ -1,49 +1,27 @@
-const { spawn } = require('child_process');
-const path = require('path'); // 👈 Path module import karein
+const { execFile } = require('child_process');
+const path = require('path');
 
-exports.predictYield = async (req, res) => {
-    const { n, p, k, size, cropType } = req.body;
+exports.predictCrop = async (req, res) => {
+    const { N, P, K, temperature, humidity, ph, rainfall } = req.body;
+    
+    if (N === undefined || P === undefined || K === undefined) {
+        return res.status(400).json({ error: 'Missing required agricultural parameters.' });
+    }
 
-    // 🌟 Absolute path use karein taaki file hamesha mile
     const scriptPath = path.join(__dirname, '../ml_service/predict.py');
+    const args = [String(N), String(P), String(K), String(temperature), String(humidity), String(ph), String(rainfall)];
 
-    // Windows users ke liye kabhi-kabi 'python' ki jagah 'python3' ya 'py' likhna padta hai
-    const pythonProcess = spawn('python', [scriptPath]);
-
-    pythonProcess.stdin.write(JSON.stringify({ n, p, k, size }));
-    pythonProcess.stdin.end();
-
-    let resultData = "";
-    let errorData = "";
-
-    pythonProcess.stdout.on('data', (data) => { 
-        resultData += data.toString(); 
-    });
-
-    // 🔴 Error capture karne ke liye ye zaroori hai
-    pythonProcess.stderr.on('data', (data) => {
-        errorData += data.toString();
-    });
-
-    pythonProcess.on('close', (code) => {
-        if (code !== 0) {
-            console.error("ML Model Error:", errorData);
-            return res.status(500).json({ error: "ML Model failed", details: errorData });
+    execFile('python', [scriptPath, ...args], { timeout: 10000 }, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Python execution error: ${stderr || error.message}`);
+            return res.status(500).json({ error: 'Prediction service failed.' });
         }
-        
-        const predictedYield = parseFloat(resultData.trim()).toFixed(2);
-
-        // Agar Python ne 'Error' string bheji ho (aapke predict.py ke try-except se)
-        if (isNaN(predictedYield)) {
-            return res.status(500).json({ error: "Invalid output from model", details: resultData });
+        try {
+            const result = JSON.parse(stdout.trim());
+            return res.status(200).json({ success: true, data: result });
+        } catch (parseErr) {
+            console.error(`JSON Parse Error: ${stdout}`);
+            return res.status(500).json({ error: 'Invalid model output format.' });
         }
-
-        res.status(200).json({
-            success: true,
-            yield: predictedYield,
-            confidence: "87%",
-            recommendation: `Based on your NPK levels for ${cropType || 'this crop'}, increase Nitrogen by 5% next week for optimal growth.`,
-            risk: "Low"
-        });
     });
 };
