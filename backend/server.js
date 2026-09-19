@@ -6,17 +6,15 @@ const apiRoutes = require('./routes/apiRoutes');
 
 const app = express();
 
-// ✅ CORS — explicit allow-list instead of "*"
-// Reads a comma-separated list from .env so you can add your Vercel/Render
-// frontend URL without touching code. Falls back to local dev ports.
+// ✅ Allowed origins (Localhost + Environment variables + Automatic Render Subdomains)
 const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173,http://localhost:3000')
     .split(',')
     .map((o) => o.trim());
 
 app.use(cors({
     origin: function (origin, callback) {
-        // allow tools like curl/Postman (no origin header) and whitelisted origins
-        if (!origin || allowedOrigins.includes(origin)) {
+        // allow Postman/curl (no origin) OR whitelisted origins OR any Render subdomain (*.onrender.com)
+        if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.onrender.com')) {
             return callback(null, true);
         }
         return callback(new Error(`CORS blocked for origin: ${origin}`));
@@ -39,7 +37,7 @@ app.get('/', (req, res) => {
     res.send("<h1>KrishiAI Backend is Live!</h1><p>Use /api for requests.</p>");
 });
 
-// ✅ Health Check — now actually reports DB state instead of always "Live"
+// ✅ Health Check
 app.get('/health', (req, res) => {
     const mongoose = require('mongoose');
     const dbUp = mongoose.connection.readyState === 1;
